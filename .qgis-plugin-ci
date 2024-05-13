@@ -1,0 +1,12 @@
+plugin_path: swissgeodownloader
+#github_organization_slug:
+project_slug: swissgeodownloader
+#transifex_coordinator: 
+#transifex_organization: 
+translation_languages:
+  - fr
+  - it
+  - de
+create_date: 2023-03-01
+
+repository_url: https://github.com/piMoll/swissgeodownloader/
