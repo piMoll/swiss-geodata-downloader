@@ -65,6 +65,7 @@ class SwissGeoDownloaderDockWidget(QDockWidget, Ui_sgdDockWidgetBase):
         self.currentDataset: Dataset = Dataset()
         self.fileList = []
         self.fileListFiltered = {}
+        self.filesListStream = []
         self.filesListDownload = []
         self.currentFilters = {
             'filetype': None,
@@ -142,6 +143,7 @@ class SwissGeoDownloaderDockWidget(QDockWidget, Ui_sgdDockWidgetBase):
         self.guiGroupExtent.setDisabled(True)
         self.guiExtentWidget.setCollapsed(True)
         self.guiGroupFiles.setDisabled(True)
+        self.guiStreamBtn.setDisabled(True)
         self.guiDownloadBtn.setDisabled(True)
         
         self.guiFileType.currentIndexChanged.connect(self.onFilterChanged)
@@ -154,6 +156,7 @@ class SwissGeoDownloaderDockWidget(QDockWidget, Ui_sgdDockWidgetBase):
         self.guiFullExtentChbox.clicked.connect(self.onUseFullExtentClicked)
         
         self.guiRequestListBtn.clicked.connect(self.onLoadFileListClicked)
+        self.guiStreamBtn.clicked.connect(self.onStreamFilesClicked)
         self.guiDownloadBtn.clicked.connect(self.onDownloadFilesClicked)
         self.guiRequestCancelBtn.clicked.connect(self.onCancelRequestClicked)
         
@@ -402,12 +405,14 @@ class SwissGeoDownloaderDockWidget(QDockWidget, Ui_sgdDockWidgetBase):
         self.guiGroupExtent.setDisabled(True)
         self.guiExtentWidget.setCollapsed(True)
         self.guiGroupFiles.setDisabled(True)
+        self.guiStreamBtn.setDisabled(True)
         self.guiDownloadBtn.setDisabled(True)
     
     def resetFileList(self):
         self.fileList = []
         self.fileListFiltered = {}
         self.fileListTbl.clear()
+        self.guiStreamBtn.setDisabled(True)
         self.guiDownloadBtn.setDisabled(True)
         self.guiFileListStatus.setText('')
         self.guiFileListStatus.setStyleSheet(self.LABEL_DEFAULT_STYLE)
@@ -481,6 +486,9 @@ class SwissGeoDownloaderDockWidget(QDockWidget, Ui_sgdDockWidgetBase):
         self.applyFilters()
 
         if self.fileList:
+            # Enable stream button for COGs
+            if any(filter(lambda x: x.type == 'image/tiff; application=geotiff; profile=cloud-optimized', self.fileList)):
+                self.guiStreamBtn.setDisabled(False)
             # Enable download button
             self.guiDownloadBtn.setDisabled(False)
         else:
@@ -626,6 +634,14 @@ class SwissGeoDownloaderDockWidget(QDockWidget, Ui_sgdDockWidgetBase):
 
         self.guiFileListStatus.setText(status)
         self.guiFileListStatus.setStyleSheet(self.LABEL_DEFAULT_STYLE)
+    
+    def onStreamFilesClicked(self):
+        self.filesListStream = []
+        for file in self.fileListFiltered.values():
+            if file.selected and file.type == 'image/tiff; application=geotiff; profile=cloud-optimized':
+                file.path = '/vsicurl/' + file.href
+                self.filesListStream.append(file)
+        addToQgis(self.qgsProject, self.filesListStream)
     
     def onDownloadFilesClicked(self):
         # Let user choose output directory

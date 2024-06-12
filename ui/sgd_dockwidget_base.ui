@@ -13,7 +13,7 @@
   <property name="minimumSize">
    <size>
     <width>500</width>
-    <height>182</height>
+    <height>215</height>
    </size>
   </property>
   <property name="allowedAreas">
@@ -127,6 +127,20 @@
        </spacer>
       </item>
       <item>
+       <widget class="QPushButton" name="guiStreamBtn">
+        <property name="toolTip">
+         <string>Stream list of files</string>
+        </property>
+        <property name="text">
+         <string>Stream</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../resources/resources.qrc">
+          <normaloff>:/plugins/swissgeodownloader/resources/icon.png</normaloff>:/plugins/swissgeodownloader/resources/icon.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="guiDownloadBtn">
         <property name="toolTip">
          <string>Download list of files</string>
@@ -173,8 +187,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>493</width>
-         <height>564</height>
+         <width>472</width>
+         <height>614</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_5">

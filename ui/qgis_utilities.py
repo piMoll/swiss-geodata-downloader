@@ -66,7 +66,7 @@ def addToQgis(qgsProject, fileList):
     already_added = [lyr.source() for lyr in qgsProject.mapLayers().values()]
 
     for file in fileList:
-        if os.path.exists(file.path) and not '.zip' in file.id:
+        if file.path.startswith('/vsicurl/') or os.path.exists(file.path) and not '.zip' in file.id:
             if file.path in already_added:
                 continue
             try:
